@@ -79,7 +79,5 @@ public class MarkovWord implements IMarkovModel {
     }
 
 
-    public int hashCode(){
-        return this.toString().hashCode();
-    }
+
 }

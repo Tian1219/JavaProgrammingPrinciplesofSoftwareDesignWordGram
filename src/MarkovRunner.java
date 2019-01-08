@@ -51,6 +51,36 @@ public class MarkovRunner {
             } 
         } 
         System.out.println("\n----------------------------------");
-    } 
+    }
+        public void testHashMap(){
+            String st = "this is a test yes this is really a test yes a test this is wow";
+            //String st = "this is a test yes this is really a test";
+            EfficientMarkovWord em2 = new EfficientMarkovWord(2);
+            runModel(em2, st, 50, 42);
+        }
 
-}
+    public void compareMethods() {
+        FileResource fr = new FileResource();
+        String st = fr.asString();
+        st = st.replace('\n', ' ');
+
+        EfficientMarkovWord em2 = new EfficientMarkovWord(2);
+        long startTime = System.nanoTime();
+        runModel(em2, st, 100, 42);
+
+        long endTime = System.nanoTime();
+        long timeElasped = (endTime - startTime);
+        System.out.println("Seconds the run took: " + timeElasped / 1000000000.0);
+
+        // MarkovWord v.s EfficientMarkovWord
+        MarkovWord m2 = new MarkovWord(2);
+        long startTime2 = System.nanoTime();
+        runModel(m2, st, 100, 42);
+        long endTime2 = System.nanoTime();
+
+        long timeElapsed2 = (endTime2 - startTime2);
+        System.out.println("Seconds the run took: " + timeElapsed2 / 1000000000.0);
+
+    }
+
+    }

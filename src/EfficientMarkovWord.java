@@ -2,11 +2,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
-public class EfficientMarkovWord {
+public class EfficientMarkovWord implements IMarkovModel{
     private String[] myText;
     private Random myRandom;
     private int myOrder;
-    private HashMap<Integer, ArrayList<String>> map;
+    private HashMap<WordGram, ArrayList<String>> map;
 
     public EfficientMarkovWord(int order) {
         myRandom = new Random();
@@ -19,6 +19,8 @@ public class EfficientMarkovWord {
 
     public void setTraining(String text){
         myText = text.split("\\s+");
+        buildHashMap();
+        printHashMapInfo();
     }
 
     public String getRandomText(int numWords){
@@ -42,25 +44,10 @@ public class EfficientMarkovWord {
         return sb.toString().trim();
     }
 
-    private ArrayList<String> getFollows(WordGram KGram) {
-        ArrayList<String> follows = new ArrayList<String>();
+    private ArrayList<String> getFollows(WordGram kGram) {
         // do to
+        return map.get(kGram);
 
-        int index = 0 ;
-        while (true){
-            index = indexOf(myText,KGram,index);
-
-            if(index == -1 || (index  + myOrder) >= myText.length){
-                break;
-            }
-            follows.add((myText[index+myOrder]));
-            index = index + myOrder;
-
-        }
-
-
-
-        return follows;
     }
 
     private int indexOf (String[] words, WordGram target, int start){
@@ -74,8 +61,47 @@ public class EfficientMarkovWord {
 
     }
 
-    public void testIndexOf(){
+   private void buildHashMap() {
+       map = new HashMap<WordGram, ArrayList<String>>();
+       // Loop over training text, keeping in mind size of WordGram
+       for (int i = 0; i <= myText.length - myOrder; i++) {
+           WordGram word = new WordGram(myText, i, myOrder);
+           int code = word.hashCode();
+           // If that WordGram is not in the HashMap yet, then it should be put in mapped to an empty ArrayList
+           if(!map.containsKey(word)){
+               map.put(word,new ArrayList<String>());
+           }
+           // Add following word to the WordGram's ArrayList in the map, if there is one
+            if(i+myOrder < myText.length){
+                String follower = myText[i+myOrder];
+                ArrayList<String> follows = map.get(word);
+                follows.add(follower);
+                map.put(word,follows);
+            }
+       }
+   }
 
 
+    private void printHashMapInfo() {
+        // Print HashMap (only if it is small)
+        System.out.println(map);
+        // Print number of keys in HashMap
+        System.out.println(map.size());
+        // Print the size of the largest value in the HashMap
+        int largest = 0;
+        for (WordGram code : map.keySet()) {
+            int current = map.get(code).size();
+            if (current > largest) {
+                largest = current;
+            }
+        }
+        System.out.println("Size of largest value in the HashMap: " + largest);
+        // Print the keys that have the maximum size value
+        for (WordGram code : map.keySet()) {
+            if (map.get(code).size() == largest) {
+                System.out.println("The keys that have the maximum size value and their follow words: ");
+                System.out.println(code + " .... " + map.get(code));
+            }
+        }
     }
 }
