@@ -5,7 +5,12 @@ public class Main {
         MarkovRunner test = new MarkovRunner();
             test.runMarkov();*/
 
-            WordGramTester test1 = new WordGramTester();
-            test1.testWordGram();
+            /*WordGramTester test1 = new WordGramTester();
+            test1.testWordGram();*/
+
+            MarkovRunner test = new MarkovRunner();
+            test.testHashMap();
+
+
     }
 }
